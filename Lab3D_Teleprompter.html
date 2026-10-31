@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#070d1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Teleprompter Lab3D: grave seu pitch olhando perto da lente. Tudo no seu navegador.">
+  <title>Lab3D · Teleprompter</title>
+  <style>
+    :root{color-scheme:dark;--bg:#070c17;--panel:#111b2d;--muted:#98a8c1;--line:rgba(199,218,255,.13);--blue:#6ca9ff;--white:#f7faff;--accent:#8cbaff}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;background:var(--bg);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,"Segoe UI",sans-serif}
+    body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}button,input,textarea{font:inherit}button{touch-action:manipulation;cursor:pointer;border:0;color:inherit}button:disabled{opacity:.45;cursor:not-allowed}input{accent-color:#73aaff}
+    .app{min-height:100vh;min-height:100dvh;position:relative;overflow:hidden;background:radial-gradient(ellipse 110% 48% at 50% -12%,#213758 0%,transparent 76%),#070c17}
+    .setup{max-width:510px;margin:auto;padding:calc(env(safe-area-inset-top) + 30px) 22px calc(env(safe-area-inset-bottom) + 35px);}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:10px}.brand-id{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:750;letter-spacing:-.4px}.brand-logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(150deg,#5da5ff,#4778e9);display:grid;place-items:center;color:#fff;font-size:20px;box-shadow:0 7px 25px #559bff40}.brand-tag{border:1px solid #315173;color:#a1c9ff;border-radius:50px;padding:7px 10px;font-size:11px;font-weight:750;letter-spacing:.7px}
+    .eyebrow{margin-top:46px;text-transform:uppercase;font-size:11px;letter-spacing:2px;color:#7baefe;font-weight:800}.hero{font-size:clamp(33px,7vw,48px);letter-spacing:-2.1px;line-height:1.07;margin:12px 0 13px;font-weight:830}.hero em{color:#8bbaff;font-style:normal}.sub{color:#9eafc8;font-size:14px;line-height:1.55;max-width:380px;margin-bottom:29px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.section-head strong{font-size:13px}.wordstat{font-size:12px;color:#92a6c6;background:#16243a;padding:6px 10px;border-radius:20px}
+    .script{width:100%;height:245px;min-height:155px;border:1px solid #293c5c;border-radius:17px;outline:none;resize:vertical;padding:17px;background:#101a2b;color:#e5efff;font-size:15px;line-height:1.65;box-shadow:inset 0 1px 0 #ffffff08}.script:focus{border-color:#659cff;box-shadow:0 0 0 3px #659cff1d}.settingbox{background:#111c2e;border:1px solid #263752;border-radius:17px;padding:17px;margin-top:16px}
+    .setting-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:650;margin-bottom:12px}.setting-value{font-size:12px;color:#a3c7ff;font-variant-numeric:tabular-nums;font-weight:800}.slide{width:100%;height:7px}.range-hints{display:flex;justify-content:space-between;color:#758aa9;font-size:11px;margin-top:5px}.font-row{display:flex;gap:7px;margin-top:14px;align-items:center}.font-row span{font-size:12px;color:#b2bed1;margin-right:auto}.adjust{width:37px;height:32px;border:1px solid #395076;background:#1b2c45;border-radius:9px;font-weight:800;font-size:16px}.font-number{min-width:40px;text-align:center;font-size:12px;color:#b6d0f7}
+    .btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:15px;font-weight:800;padding:16px 12px;min-height:54px;font-size:14px;transition:transform .1s}.btn:active{transform:scale(.985)}.primary{background:linear-gradient(105deg,#80b4ff,#578fff);color:#06162e;box-shadow:0 12px 32px #397de72f}.secondary{border:1px solid #334867;background:#172338;color:#eff6ff}.actions{display:grid;gap:10px;margin-top:18px}.privacy{font-size:11px;color:#7e91ad;text-align:center;line-height:1.6;margin:16px auto 0;max-width:370px}.error{display:none;margin-top:12px;color:#ffc7c7;background:#4d222941;border:1px solid #94444b;padding:12px;border-radius:12px;font-size:13px;line-height:1.5}
+    .session{display:none;position:fixed;inset:0;background:#090d18;overflow:hidden;z-index:10}.video-bg{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;transform:scaleX(-1);background:#151d2c}.practice-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#1c3155,#080e1b 70%)}.vignette{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(3,9,20,.94) 0%,rgba(4,10,21,.83) 19%,transparent 40%,transparent 68%,rgba(3,8,19,.55) 85%,rgba(3,8,19,.96) 100%)}
+    .top-controls{position:absolute;z-index:15;top:calc(env(safe-area-inset-top) + 9px);left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}.top-controls>*{pointer-events:auto}.top-pill{border:1px solid #ffffff28;border-radius:50px;background:#060e1b9c;backdrop-filter:blur(15px);font-size:11px;letter-spacing:.5px;font-weight:800;padding:10px 12px}.exit-btn{font-size:12px;border-radius:50px;border:1px solid #ffffff29;background:#091425b8;padding:11px 14px}.record-dot{display:inline-block;width:7px;height:7px;background:#ff5f67;border-radius:50%;margin-right:5px;vertical-align:middle;box-shadow:0 0 0 3px #ff5f6730}.countdown{position:absolute;z-index:25;inset:0;display:none;place-items:center;background:#060d1bc9;backdrop-filter:blur(6px);font-size:min(30vw,140px);font-weight:850;text-shadow:0 10px 30px #0009}
+    .prompt-viewport{position:absolute;z-index:12;top:calc(env(safe-area-inset-top) + 57px);left:4%;right:4%;height:min(28vh,210px);min-height:115px;overflow:hidden;text-align:center;-webkit-mask-image:linear-gradient(to bottom,black 0%,black 77%,transparent 100%);mask-image:linear-gradient(to bottom,black 0%,black 77%,transparent 100%);pointer-events:none}.prompt-content{position:absolute;top:0;left:0;right:0;will-change:transform;padding:0 9px 18px;color:white;line-height:1.28;font-size:28px;letter-spacing:.1px;font-weight:730;text-shadow:0 2px 15px #000,0 0 30px #000;overflow-wrap:break-word}.prompt-content p{margin:0 0 .8em}.prompt-content .last{color:#99c4ff}
+    .reading-guide{position:absolute;z-index:13;left:4%;right:4%;top:calc(env(safe-area-inset-top) + 55px);height:2px;background:linear-gradient(90deg,transparent,#77b1ff,transparent);opacity:.68;pointer-events:none}
+    .bottom{position:absolute;z-index:15;bottom:calc(env(safe-area-inset-bottom) + 18px);left:14px;right:14px}.progress-row{display:flex;align-items:center;justify-content:space-between;color:#e1eafa;font-size:12px;font-variant-numeric:tabular-nums;margin-bottom:10px;gap:12px}.progresstrack{height:3px;background:#ffffff30;border-radius:5px;overflow:hidden;margin-bottom:15px}.progressfill{width:0%;height:100%;background:#7cb8ff;border-radius:5px}.controlglass{border:1px solid #ffffff2a;background:#0c1829c9;backdrop-filter:blur(20px);border-radius:22px;padding:13px 12px 12px;box-shadow:0 10px 45px #0005}.transport{display:flex;justify-content:center;align-items:center;gap:9px}.iconbtn{display:flex;align-items:center;justify-content:center;background:#1c2c45;border:1px solid #ffffff17;border-radius:50%;width:44px;height:44px;flex:0 0 44px;font-size:19px}.recordbtn{display:flex;justify-content:center;align-items:center;gap:8px;background:#ff5b65;color:white;border-radius:50px;font-weight:800;padding:12px 16px;min-height:48px;white-space:nowrap;font-size:13px}.recordbtn.isrecording{background:#ff6670}.recordbtn .square{display:block;width:12px;height:12px;background:currentColor;border-radius:2px}.recordbtn .circle{display:block;width:12px;height:12px;background:currentColor;border-radius:50%}.lower-row{display:flex;justify-content:center;align-items:center;gap:12px;padding-top:13px}.smallbtn{font-size:12px;background:#23334d;border-radius:9px;padding:8px 12px;font-weight:800}.speedlabel{font-size:12px;color:#bad5fc;font-variant-numeric:tabular-nums;min-width:68px;text-align:center}.session-tip{text-align:center;color:#b1bfda;font-size:11px;margin-top:10px;opacity:.88}
+    .result-shade{display:none;position:absolute;z-index:40;inset:0;background:#020712d9;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}.result-card{width:min(100%,420px);background:#111d30;border:1px solid #355179;border-radius:24px;padding:22px;max-height:92dvh;overflow:auto}.result-card h2{font-size:22px;letter-spacing:-.6px;margin:4px 0 7px}.result-card p{color:#aebfd8;font-size:13px;line-height:1.5;margin:0 0 15px}.result-video{width:100%;max-height:40dvh;object-fit:contain;border-radius:14px;background:black;margin-bottom:14px}.result-btns{display:grid;gap:9px}.result-close{border:0;background:transparent;padding:14px;font-size:13px;color:#a4b9d7;width:100%}.safe-note{color:#8fa5c4;font-size:11px;line-height:1.5;margin-top:10px}
+    @media(max-height:680px){.setup{padding-top:calc(env(safe-area-inset-top) + 14px)}.eyebrow{margin-top:25px}.script{height:180px}.prompt-viewport{height:105px}.session-tip{display:none}.bottom{bottom:calc(env(safe-area-inset-bottom) + 9px)}}
+    @media(min-width:700px){.session{max-width:470px;left:50%;transform:translateX(-50%);box-shadow:0 0 70px #000}.prompt-viewport{height:170px}.setup{padding-top:56px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <main id="setup" class="setup">
+    <div class="brand"><div class="brand-id"><span class="brand-logo">◇</span> LAB3D <span style="font-weight:450;color:#9baec8">/ studio</span></div><span class="brand-tag">TELEPROMPTER</span></div>
+    <div class="eyebrow">Seu pitch. Sua câmera.</div>
+    <h1 class="hero">Olhe para a lente.<br><em>O texto acompanha.</em></h1>
+    <p class="sub">Leia seu roteiro pertinho da câmera frontal enquanto grava. O texto aparece só para você — não sai no vídeo.</p>
+    <div class="section-head"><strong>Seu roteiro</strong><span class="wordstat" id="wordStats">—</span></div>
+    <textarea id="script" class="script" spellcheck="true" aria-label="Texto do teleprompter"></textarea>
+    <div class="settingbox">
+      <div class="setting-row"><span>Velocidade da leitura</span><span class="setting-value" id="speedVal">140 palavras/min</span></div>
+      <input class="slide" type="range" id="speed" min="65" max="220" step="5" value="140" aria-label="Velocidade do texto">
+      <div class="range-hints"><span>Devagar</span><span>Rápido</span></div>
+      <div class="font-row"><span>Tamanho da letra</span><button class="adjust" id="fontDown" aria-label="Diminuir fonte">−</button><output id="fontVal" class="font-number">27px</output><button class="adjust" id="fontUp" aria-label="Aumentar fonte">+</button></div>
+    </div>
+    <div id="error" class="error" role="alert"></div>
+    <div class="actions">
+      <button class="btn primary" id="recordSetup">● &nbsp;GRAVAR COM TELEPROMPTER <span style="font-size:18px">›</span></button>
+      <button class="btn secondary" id="practiceSetup">▶ &nbsp;ENSAIAR SEM CÂMERA</button>
+    </div>
+    <p class="privacy">🔒 Seu vídeo fica no seu aparelho. Não enviamos a gravação para nenhum servidor. Para gravar, abra esta página por HTTPS no Safari e autorize câmera e microfone.</p>
+  </main>
+
+  <section id="session" class="session" aria-label="Tela de teleprompter">
+    <div id="practiceBg" class="practice-bg" style="display:none"></div>
+    <video class="video-bg" id="cameraPreview" autoplay muted playsinline webkit-playsinline></video>
+    <div class="vignette"></div>
+    <div class="top-controls"><span class="top-pill" id="sessionStatus">PRONTO</span><button class="exit-btn" id="exitBtn">✕ &nbsp; Sair</button></div>
+    <div id="readingGuide" class="reading-guide"></div>
+    <div id="promptViewport" class="prompt-viewport"><div id="promptContent" class="prompt-content"></div></div>
+    <div id="countdown" class="countdown" aria-live="assertive">3</div>
+    <div class="bottom">
+      <div class="progress-row"><span id="elapsed">00:00</span><span id="progressText">Olhe perto da lente ◉</span><span id="remaining">01:00</span></div>
+      <div class="progresstrack"><div id="progressFill" class="progressfill"></div></div>
+      <div class="controlglass">
+        <div class="transport">
+          <button id="backBtn" class="iconbtn" aria-label="Voltar no texto">↶</button>
+          <button id="playBtn" class="iconbtn" aria-label="Pausar ou continuar o texto">⏸</button>
+          <button id="mainAction" class="recordbtn"><span class="circle"></span><span id="mainActionLabel">Gravar vídeo</span></button>
+          <button id="aheadBtn" class="iconbtn" aria-label="Avançar no texto">↷</button>
+        </div>
+        <div class="lower-row"><button id="slowBtn" class="smallbtn" aria-label="Diminuir velocidade">− 10</button><span class="speedlabel" id="liveSpeed">140 ppm</span><button id="fastBtn" class="smallbtn" aria-label="Aumentar velocidade">+ 10</button></div>
+        <div class="session-tip" id="sessionTip">O texto não aparece na gravação.</div>
+      </div>
+    </div>
+    <div id="result" class="result-shade" role="dialog" aria-modal="true" aria-label="Seu vídeo está pronto">
+      <div class="result-card"><div style="font-size:24px">🎬</div><h2>Seu pitch está gravado!</h2><p>Confira o vídeo e salve no iPhone. O roteiro não aparece no arquivo.</p><video id="resultVideo" class="result-video" controls playsinline></video><div class="result-btns"><button id="shareBtn" class="btn primary">↑ &nbsp;Compartilhar / salvar vídeo</button><button id="downloadBtn" class="btn secondary">↓ &nbsp;Baixar arquivo</button></div><div class="safe-note">No Safari, use “Salvar em Arquivos” no menu de compartilhamento. Para Fotos, abra o vídeo e use o botão Compartilhar se a opção estiver disponível.</div><button id="newTake" class="result-close">↺ Fazer outra gravação</button></div>
+    </div>
+  </section>
+</div>
+<script>
+(()=>{
+'use strict';
+const DEFAULT_SCRIPT = `Imagine tentar aprender a dirigir sem nunca entrar em um carro.
+
+É assim que muitos estudantes aprendem Química: apenas na teoria.
+
+Laboratórios físicos são caros, exigem infraestrutura e nem sempre estão acessíveis, especialmente no ensino público.
+
+Foi para mudar essa realidade que nasceu o Lab3D.
+
+Um laboratório virtual em 3D, onde estudantes podem explorar substâncias, visualizar reações e interagir com experimentos digitais.
+
+Nossa solução é voltada para instituições de ensino, incluindo universidades e escolas públicas, ampliando o acesso à experimentação sem substituir os laboratórios tradicionais.
+
+O Lab3D já possui uma plataforma funcional, em desenvolvimento e validação.
+
+Porque a Química não foi feita apenas para ser decorada.
+
+Foi feita para ser experimentada.`;
+const $=id=>document.getElementById(id);
+const el={setup:$('setup'),session:$('session'),script:$('script'),stats:$('wordStats'),speed:$('speed'),speedVal:$('speedVal'),fontVal:$('fontVal'),error:$('error'),video:$('cameraPreview'),practiceBg:$('practiceBg'),status:$('sessionStatus'),prompt:$('promptContent'),viewport:$('promptViewport'),countdown:$('countdown'),elapsed:$('elapsed'),remaining:$('remaining'),progressText:$('progressText'),progressFill:$('progressFill'),play:$('playBtn'),main:$('mainAction'),mainLabel:$('mainActionLabel'),liveSpeed:$('liveSpeed'),tip:$('sessionTip'),result:$('result'),resultVideo:$('resultVideo'),share:$('shareBtn'),download:$('downloadBtn')};
+let speed=140,fontSize=27,stream=null,recorder=null,chunks=[],recording=false,recordStart=0,recordDuration=0,practice=false,playing=false,scrollY=0,lastFrame=0,animId=0,timeoutId=0,active=false,blob=null,blobURL=null,willRecord=false,counting=false;
+try{const prior=localStorage.getItem('lab3d_teleprompter_script');el.script.value=prior===null?DEFAULT_SCRIPT:prior;const ss=+(localStorage.getItem('lab3d_teleprompter_speed')||140);if(ss>=65&&ss<=220)speed=ss;const fs=+(localStorage.getItem('lab3d_teleprompter_font')||27);if(fs>=20&&fs<=40)fontSize=fs;}catch(_){el.script.value=DEFAULT_SCRIPT}
+el.speed.value=speed;
+const words=()=>el.script.value.trim().split(/\s+/).filter(Boolean).length;
+const duration=()=>words()/speed*60;
+const clock=seconds=>{seconds=Math.max(0,Math.floor(seconds));return `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`};
+function updateStats(){el.stats.textContent=`${words()} palavras · ~${clock(duration())}`;el.speedVal.textContent=`${speed} palavras/min`;el.liveSpeed.textContent=`${speed} ppm`;el.fontVal.textContent=`${fontSize}px`;el.prompt.style.fontSize=fontSize+'px';}
+function store(k,v){try{localStorage.setItem(k,v)}catch(_){}}
+el.script.addEventListener('input',()=>{store('lab3d_teleprompter_script',el.script.value);updateStats()});
+el.speed.addEventListener('input',()=>{speed=+el.speed.value;store('lab3d_teleprompter_speed',speed);updateStats()});
+function fontChange(delta){fontSize=Math.max(20,Math.min(40,fontSize+delta));store('lab3d_teleprompter_font',fontSize);updateStats()}
+$('fontDown').onclick=()=>fontChange(-1);$('fontUp').onclick=()=>fontChange(1);
+function showError(msg){el.error.style.display='block';el.error.textContent=msg;el.setup.style.display='block';}
+function clearError(){el.error.style.display='none';}
+function buildPrompt(){el.prompt.textContent='';const paragraphs=el.script.value.trim().split(/\n\s*\n/g).map(s=>s.replace(/\s*\n\s*/g,' ').trim()).filter(Boolean);paragraphs.forEach((s,i)=>{const p=document.createElement('p');p.textContent=s;if(i===paragraphs.length-1)p.className='last';el.prompt.appendChild(p)});el.prompt.style.transform='translate3d(0,0,0)';scrollY=0;el.remaining.textContent=clock(duration());el.elapsed.textContent='00:00';el.progressFill.style.width='0%';el.progressText.textContent='Olhe perto da lente ◉';}
+function maxScroll(){return Math.max(0,el.prompt.scrollHeight-el.viewport.clientHeight+15)}
+function setScroll(pos){scrollY=Math.max(0,Math.min(maxScroll(),pos));el.prompt.style.transform=`translate3d(0,${-scrollY}px,0)`;el.progressFill.style.width=(maxScroll()?scrollY/maxScroll()*100:100)+'%';let rem=(maxScroll()? (1-scrollY/maxScroll())*duration():0);el.remaining.textContent=clock(rem)}
+function frame(t){if(!active)return;if(!lastFrame)lastFrame=t;const dt=Math.max(0,Math.min((t-lastFrame)/1000,.18));lastFrame=t;if(playing&&!counting){const pxps=maxScroll()/Math.max(1,duration());setScroll(scrollY+pxps*dt);if(scrollY>=maxScroll())playing=false;}if(recording){el.elapsed.textContent=clock((Date.now()-recordStart)/1000)}else if(playing||practice){el.elapsed.textContent=clock((maxScroll()?scrollY/maxScroll()*duration():0))}el.play.textContent=playing?'⏸':'▶';animId=requestAnimationFrame(frame)}
+function startLoop(){if(animId)cancelAnimationFrame(animId);lastFrame=0;animId=requestAnimationFrame(frame)}
+function stopLoop(){if(animId)cancelAnimationFrame(animId);animId=0;active=false;}
+function setStatus(txt,rec=false){el.status.innerHTML=(rec?'<span class="record-dot"></span>':'')+txt}
+function sessionOpen(mode){practice=mode==='practice';active=true;recording=false;counting=false;playing=false;buildPrompt();el.setup.style.display='none';el.session.style.display='block';el.practiceBg.style.display=practice?'block':'none';el.video.style.display=practice?'none':'block';el.main.style.display=practice?'none':'flex';el.main.classList.remove('isrecording');el.main.innerHTML='<span class="circle"></span><span id="mainActionLabel">Gravar vídeo</span>';el.mainLabel=$('mainActionLabel');el.tip.textContent=practice?'Ensaio: você pode controlar o texto.':'O texto não aparece na gravação.';setStatus(practice?'MODO ENSAIO':'CÂMERA PRONTA');startLoop();}
+async function enterCamera(startNow){clearError();if(!el.script.value.trim())return showError('Escreva seu roteiro antes de começar.');if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return showError('Não foi possível acessar a câmera. Abra o HTML em um site HTTPS no Safari (não em uma prévia de arquivo).');if(!window.MediaRecorder)return showError('Este navegador não permite gravar vídeo aqui. Use o Safari atualizado no iPhone.');try{
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30}},audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  el.video.srcObject=stream;el.video.muted=true;el.video.setAttribute('playsinline','');await el.video.play().catch(()=>{});sessionOpen('camera');if(startNow)startCountdown();
+}catch(e){stopTracks();showError(e.name==='NotAllowedError'?'Câmera ou microfone bloqueados. No Safari, permita o acesso nas configurações do site e tente novamente.':`Não foi possível abrir a câmera: ${e.message||'erro desconhecido'}. Use uma página HTTPS no Safari.`)}}
+function stopTracks(){if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;}el.video.srcObject=null;}
+function pickMime(){if(!window.MediaRecorder)return '';const possibilities=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=h264,aac','video/mp4','video/webm;codecs=vp8,opus','video/webm'];for(const mime of possibilities){try{if(MediaRecorder.isTypeSupported(mime))return mime}catch(_){}}return ''}
+function startCountdown(){if(practice||recording||counting||!stream)return;counting=true;playing=false;setScroll(0);let n=3;el.countdown.style.display='grid';el.countdown.textContent=n;setStatus('PREPARANDO');const tick=()=>{if(!active||!counting)return;n--;if(n>0){el.countdown.textContent=n;timeoutId=setTimeout(tick,950)}else{el.countdown.style.display='none';counting=false;beginRecording()}};timeoutId=setTimeout(tick,950)}
+function beginRecording(){if(!active||!stream)return;chunks=[];let mime=pickMime();try{recorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);recorder.ondataavailable=e=>{if(e.data&&e.data.size>0)chunks.push(e.data)};recorder.onerror=()=>{setStatus('ERRO NA GRAVAÇÃO');};recorder.onstop=finishRecording;recorder.start(1000);recordStart=Date.now();recording=true;playing=true;setStatus('GRAVANDO',true);el.main.classList.add('isrecording');el.main.innerHTML='<span class="square"></span> Encerrar';el.tip.textContent='Toque em “Encerrar” para salvar o vídeo.';}catch(e){setStatus('FALHA AO GRAVAR');el.tip.textContent='Não foi possível gravar. Tente reabrir no Safari por HTTPS.';playing=false}}
+function endRecording(){if(!recording)return;playing=false;recording=false;recordDuration=(Date.now()-recordStart)/1000;setStatus('SALVANDO');el.main.disabled=true;try{if(recorder&&recorder.state!=='inactive')recorder.stop();else finishRecording()}catch(_){finishRecording()}}
+function finishRecording(){stopTracks();el.main.disabled=false;if(!chunks.length){el.tip.textContent='Não foi possível obter o arquivo de vídeo. Tente novamente.';setStatus('ERRO AO SALVAR');return}const type=(recorder&&recorder.mimeType)||'video/mp4';blob=new Blob(chunks,{type});if(blobURL)URL.revokeObjectURL(blobURL);blobURL=URL.createObjectURL(blob);el.resultVideo.src=blobURL;el.resultVideo.load();el.result.style.display='flex';setStatus('VÍDEO PRONTO');}
+function closeSession(){clearTimeout(timeoutId);counting=false;el.countdown.style.display='none';if(recording){if(!confirm('Sair vai interromper esta gravação. Quer encerrar e salvar o vídeo?'))return;endRecording();return;}if(el.result.style.display==='flex'){el.result.style.display='none';el.resultVideo.pause()}playing=false;stopLoop();stopTracks();el.session.style.display='none';el.setup.style.display='block'}
+$('recordSetup').onclick=()=>enterCamera(true);
+$('practiceSetup').onclick=()=>{clearError();if(!el.script.value.trim())return showError('Escreva seu roteiro antes de começar.');sessionOpen('practice');playing=true;setStatus('ENSAIANDO')};
+$('exitBtn').onclick=closeSession;
+el.main.onclick=()=>{if(recording)endRecording();else startCountdown()};
+el.play.onclick=()=>{if(counting)return;playing=!playing;el.tip.textContent=playing?'O texto está avançando.':'Texto pausado. Toque em ▶ para continuar.'};
+$('backBtn').onclick=()=>setScroll(scrollY-maxScroll()/Math.max(1,duration())*7);
+$('aheadBtn').onclick=()=>setScroll(scrollY+maxScroll()/Math.max(1,duration())*7);
+function liveChange(delta){speed=Math.max(65,Math.min(220,speed+delta));el.speed.value=speed;store('lab3d_teleprompter_speed',speed);updateStats()}
+$('slowBtn').onclick=()=>liveChange(-10);$('fastBtn').onclick=()=>liveChange(10);
+$('newTake').onclick=()=>{el.result.style.display='none';el.resultVideo.pause();closeSession()};
+function filename(){return 'Lab3D-pitch-'+new Date().toISOString().replace(/[:.]/g,'-')+(blob?.type.includes('webm')?'.webm':'.mp4')}
+el.download.onclick=()=>{if(!blobURL)return;const a=document.createElement('a');a.href=blobURL;a.download=filename();document.body.appendChild(a);a.click();a.remove()};
+el.share.onclick=async()=>{if(!blob)return;const file=new File([blob],filename(),{type:blob.type||'video/mp4'});try{if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){await navigator.share({files:[file],title:'Pitch Lab3D'});return;}}catch(e){if(e.name==='AbortError')return;}el.download.click()};
+window.addEventListener('pagehide',()=>{if(!recording)stopTracks()});
+updateStats();
+})();
+</script>
+</body>
+</html>
